@@ -103,7 +103,8 @@ DecoderState::next(const double *probs,
           // compute probability of current path
           float log_p = log_prob_c + prefix->score;
 
-          // combine current path with previous ones with the same prefix
+          // we don't add a timestep for blank characters so simply forward the
+          // timesteps sequence here
           // the blank label comes last, so we can compare log_prob_nb_cur with log_p
           if (prefix->log_prob_nb_cur < log_p) {
             // keep current timesteps
@@ -119,7 +120,8 @@ DecoderState::next(const double *probs,
           // compute probability of current path
           float log_p = log_prob_c + prefix->log_prob_nb_prev;
 
-          // combine current path with previous ones with the same prefix
+          // we don't add a timestep for repeated characters so simply forward
+          // the timesteps sequence here
           if (prefix->log_prob_nb_cur < log_p) {
             // keep current timesteps
             prefix->previous_timesteps = nullptr;
@@ -163,7 +165,8 @@ DecoderState::next(const double *probs,
             }
           }
 
-          // combine current path with previous ones with the same prefix
+          // extend new prefix timesteps sequence if the new probability is
+          // higher
           if (prefix_new->log_prob_nb_cur < log_p) {
             // record data needed to update timesteps
             // the actual update will be done if nothing better is found
